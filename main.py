@@ -6,80 +6,50 @@ from src.ai_system import AIAgentSystem
 ai_system = AIAgentSystem()
 
 
-async def chat_interface(message, history):
-    """Gradio chat interface function"""
+async def chat_function(message, history):
+    """Chat function for gr.ChatInterface"""
     if not message.strip():
-        return "", history + [{"role": "assistant", "content": "Please enter a message."}]
+        return "Please enter a message."
 
     response, debug = await ai_system.process_query(message)
-
-    # Update history with new message format
-    new_history = history + [
-        {"role": "user", "content": message},
-        {"role": "assistant", "content": response}
-    ]
-
-    return "", new_history
+    return response
 
 
-# Create Gradio interface
-with gr.Blocks(
-        title="Brian VEAU - CIO/CTO Professional Assistant",
-        theme=gr.themes.Soft(),
-        css="""
+# Create ChatInterface
+demo = gr.ChatInterface(
+    fn=chat_function,
+    type="messages",
+    title="🤖 Brian VEAU - Professional AI Assistant",
+    description="""
+Hello! I'm an AI assistant representing **Brian VEAU**, Global CIO and Vice President of IT.
+
+I can answer questions about Brian's:
+- Professional experience and achievements
+- Technical skills and expertise  
+- Leadership background
+- Career progression
+- Availability for CIO/CTO positions
+
+*This assistant is designed for recruiters and hiring managers interested in senior IT leadership roles.*
+    """,
+    theme=gr.themes.Soft(),
+    css="""
     .gradio-container {
         max-width: 800px !important;
         margin: auto !important;
     }
-    .chatbot {
-        height: 600px !important;
-    }
-    """
-) as demo:
-    gr.Markdown("""
-    # 🤖 Brian VEAU - Professional AI Assistant
-
-    Hello! I'm an AI assistant representing **Brian VEAU**, Global CIO and Vice President of IT.
-
-    I can answer questions about Brian's:
-    - Professional experience and achievements
-    - Technical skills and expertise  
-    - Leadership background
-    - Career progression
-    - Availability for CIO/CTO positions
-
-    *This assistant is designed for recruiters and hiring managers interested in senior IT leadership roles.*
-    """)
-
-    chatbot = gr.Chatbot(
-        value=[],
-        label="Chat with Brian's AI Assistant",
-        height=600,
-        show_label=True,
-        container=True,
-        type="messages"
-    )
-
-    msg = gr.Textbox(
+    """,
+    chatbot=gr.Chatbot(height=400),
+    textbox=gr.Textbox(
         placeholder="Ask about Brian's experience, skills, or career objectives...",
-        label="Your Message",
-        lines=2,
-        max_lines=5
-    )
-
-    clear = gr.Button("Clear Conversation")
-
-    # Event handlers
-    msg.submit(
-        chat_interface,
-        inputs=[msg, chatbot],
-        outputs=[msg, chatbot]
-    )
-
-    clear.click(
-        lambda: [],
-        outputs=[chatbot]
-    )
+        container=False,
+        scale=7
+    ),
+    submit_btn="Send",
+    retry_btn="🔄 Retry",
+    undo_btn="↩️ Undo",
+    clear_btn="🗑️ Clear"
+)
 
 if __name__ == "__main__":
     demo.launch(
