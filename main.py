@@ -39,15 +39,13 @@ I can answer questions about Brian's:
         margin: auto !important;
     }
     """,
-    chatbot=gr.Chatbot(height=400),
+    chatbot=gr.Chatbot(height=400, type="messages"),
     textbox=gr.Textbox(
         placeholder="Ask about Brian's experience, skills, or career objectives...",
         container=False,
         scale=7
     ),
     submit_btn="Send",
-    retry_btn="🔄 Retry",
-    undo_btn="↩️ Undo",
     clear_btn="🗑️ Clear"
 )
 
