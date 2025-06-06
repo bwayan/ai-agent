@@ -41,6 +41,12 @@ ENV/
 *.swo
 *~
 
+# PyCharm
+.idea/*
+!.idea/runConfigurations/
+.idea/runConfigurations/*
+!.idea/runConfigurations/*.xml
+
 # OS
 .DS_Store
 Thumbs.db
