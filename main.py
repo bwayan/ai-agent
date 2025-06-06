@@ -9,12 +9,15 @@ ai_system = AIAgentSystem()
 async def chat_interface(message, history):
     """Gradio chat interface function"""
     if not message.strip():
-        return "", history + [("", "Please enter a message.")]
+        return "", history + [{"role": "assistant", "content": "Please enter a message."}]
 
     response, debug = await ai_system.process_query(message)
 
-    # Update history
-    new_history = history + [(message, response)]
+    # Update history with new message format
+    new_history = history + [
+        {"role": "user", "content": message},
+        {"role": "assistant", "content": response}
+    ]
 
     return "", new_history
 
@@ -54,7 +57,7 @@ with gr.Blocks(
         height=600,
         show_label=True,
         container=True,
-        bubble_full_width=False
+        type="messages"
     )
 
     msg = gr.Textbox(
@@ -74,8 +77,8 @@ with gr.Blocks(
     )
 
     clear.click(
-        lambda: ([], []),
-        outputs=[chatbot, chatbot]
+        lambda: [],
+        outputs=[chatbot]
     )
 
 if __name__ == "__main__":
